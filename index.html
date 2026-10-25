@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Catálogo de constelaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400..600&family=Hanken+Grotesk:wght@400..600&display=swap">
+<style>
+:root{--bg:#eef1f8;--surface:#fff;--ink:#14203d;--muted:#5a6786;--line:#cfd7ea;--accent:#2b4a9a;--on-accent:#fff;--star:#c8871b;--chart:#e3e9f6;--danger:#a3262f;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1830;--surface:#16213f;--ink:#e8edf8;--muted:#93a2c4;--line:#27365e;--accent:#8fb2ff;--on-accent:#0f1830;--star:#ffd479;--chart:#0b1328;--danger:#ff8d94;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1830;--surface:#16213f;--ink:#e8edf8;--muted:#93a2c4;--line:#27365e;--accent:#8fb2ff;--on-accent:#0f1830;--star:#ffd479;--chart:#0b1328;--danger:#ff8d94;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Hanken Grotesk",system-ui,sans-serif}
+main{max-width:1120px;margin:0 auto;padding:40px 20px 64px}
+h1,h2{font-family:Newsreader,Georgia,serif;font-weight:600;margin:0}
+h1{font-size:clamp(2.1rem,6vw,3.4rem);line-height:1.05;letter-spacing:-.015em}
+.sub{color:var(--muted);margin:10px 0 28px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+#filters{display:contents}
+input,select,textarea,button{font:inherit;color:inherit}
+input[type=search],input[type=text],input[type=number],input[type=date],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:9px 12px;width:100%}
+.bar input[type=search]{flex:1 1 220px;width:auto}
+.bar select{width:auto}
+button{cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:9px 14px}
+button.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent);font-weight:600}
+button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+button.danger{color:var(--danger);border-color:var(--danger)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+.card{display:block;text-align:left;padding:0;overflow:hidden;border-radius:12px}
+.card:hover{border-color:var(--accent)}
+.chart{display:block;aspect-ratio:1/1;background-color:var(--chart);background-image:radial-gradient(var(--line) 1px,transparent 1.2px);background-size:20px 20px}
+.chart svg{display:block;width:100%;height:100%}
+svg path{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+svg circle{fill:var(--star)}
+.gl line{stroke:var(--line);stroke-width:1;vector-effect:non-scaling-stroke}
+.info{display:block;padding:14px 16px 16px}
+.info h2{font-size:1.45rem;line-height:1.15;margin-bottom:4px}
+.meta{display:block;color:var(--muted);font-size:.92rem;margin-top:4px}
+.meta b{font-weight:600;color:var(--ink)}
+.clip{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.seen{display:block;margin-top:8px;font-size:.88rem;font-weight:600;color:var(--star)}
+.empty{grid-column:1/-1;color:var(--muted);padding:48px 0;text-align:center}
+.tag{display:inline-block;font:500 .72rem "Hanken Grotesk",system-ui,sans-serif;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:1px 8px;margin-left:8px;vertical-align:middle}
+dialog{width:min(900px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:24px}
+dialog::backdrop{background:rgba(5,10,25,.6)}
+dialog h2{font-size:1.7rem;margin-bottom:16px}
+.cols{display:grid;grid-template-columns:1fr;gap:24px}
+@media(min-width:700px){.cols{grid-template-columns:1fr 1.1fr}}
+label{display:block;font-size:.92rem;font-weight:500;margin-bottom:12px}
+label>input,label>select,label>textarea{margin-top:4px;font-weight:400}
+label.chk{display:flex;gap:8px;align-items:center}
+label.chk input{width:auto;margin:0}
+#pad{display:block;width:100%;aspect-ratio:1/1;border:1px solid var(--line);border-radius:10px;cursor:crosshair;background:var(--chart);touch-action:none;user-select:none}
+.hint{font-size:.88rem;color:var(--muted);margin:8px 0}
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}
+.actions .sp{flex:1}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 0;border-bottom:1px solid var(--line)}
+.frow .fo,.frow .fb{grid-column:1/-1}
+.fb{display:flex;gap:6px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Catálogo de constelaciones</h1>
+  <p class="sub" id="count"></p>
+  <div class="bar">
+    <input type="search" id="q" placeholder="Buscar en todos los campos" aria-label="Buscar">
+    <span id="filters"></span>
+    <button class="primary" id="new">Nueva constelación</button>
+    <button id="mf">Campos</button>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<dialog id="dlg">
+  <form id="f">
+    <h2 id="ttl">Nueva constelación</h2>
+    <label>Nombre<input type="text" id="nm" required></label>
+    <div class="cols">
+      <div><p class="hint" id="fnote"></p><div class="tools" style="margin:0 0 14px"><button type="button" id="rf">Editar campos de esta constelación</button></div><div id="dyn"></div></div>
+      <div>
+        <svg id="pad" aria-label="Lienzo para dibujar la constelación"></svg>
+        <p class="hint">Tocá el lienzo para ubicar una estrella. Arrastrá para mover la vista y usá la rueda o los botones para acercar y alejar. <span id="scale"></span>.</p>
+        <div class="tools">
+          <button type="button" id="zin" aria-label="Acercar">+</button>
+          <button type="button" id="zout" aria-label="Alejar">−</button>
+          <button type="button" id="zfit">Ajustar vista</button>
+        </div>
+        <div class="tools">
+          <button type="button" id="brk" aria-pressed="false">Cortar línea</button>
+          <button type="button" id="undo">Deshacer</button>
+          <button type="button" id="clr">Limpiar</button>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button type="submit" class="primary">Guardar</button>
+      <button type="button" id="cancel">Cancelar</button>
+      <span class="sp"></span>
+      <button type="button" class="danger" id="del" hidden>Eliminar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="fdlg" style="width:min(720px,calc(100% - 24px))">
+  <h2 id="ftitle">Campos del catálogo</h2>
+  <p class="hint" id="fhint"></p>
+  <div id="flist"></div>
+  <div class="actions">
+    <button type="button" id="fadd">Agregar campo</button>
+    <button type="button" id="fgen" hidden>Usar campos generales</button>
+    <span class="sp"></span>
+    <button type="button" class="primary" id="fsave">Guardar campos</button>
+    <button type="button" id="fcancel">Cancelar</button>
+  </div>
+</dialog>
+
+<script>
+const KEY='catalogo-constelaciones-v2';
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TYPES={text:'Texto corto',longtext:'Texto largo',number:'Número',date:'Fecha',select:'Lista desplegable',checkbox:'Casilla (sí/no)'};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function seed(){return{fields:[
+{id:'abbr',label:'Abreviatura',type:'text'},
+{id:'hemi',label:'Hemisferio',type:'select',options:['Sur','Norte','Ecuatorial']},
+{id:'when',label:'Mejor época',type:'text'},
+{id:'star',label:'Estrella más brillante',type:'text'},
+{id:'mag',label:'Magnitud',type:'number'},
+{id:'notes',label:'Notas',type:'longtext'},
+{id:'obs',label:'Ya la observé',type:'checkbox'},
+{id:'date',label:'Fecha de observación',type:'date'}],items:[
+{id:'cru',name:'Cruz del Sur',pts:[[50,8,0],[50,92,0],[22,52,1],[78,42,0]],vals:{abbr:'Cru',hemi:'Sur',when:'Abril a julio',star:'Acrux',mag:0.76,notes:'El eje largo de la cruz apunta hacia el polo sur celeste.',obs:true}},
+{id:'ori',name:'Orión',pts:[[30,12,0],[42,50,0],[34,88,0],[72,16,1],[58,46,0],[74,84,0],[42,50,1],[50,48,0],[58,46,0]],vals:{abbr:'Ori',hemi:'Ecuatorial',when:'Diciembre a marzo',star:'Rigel',mag:0.13,notes:'Las Tres Marías del cinturón ayudan a ubicar otras estrellas brillantes.',obs:false}},
+{id:'uma',name:'Osa Mayor',pts:[[80,22,0],[78,42,0],[54,46,0],[52,30,0],[80,22,0],[52,30,1],[34,28,0],[22,22,0],[8,38,0]],vals:{abbr:'UMa',hemi:'Norte',when:'Marzo a mayo',star:'Alioth',mag:1.76,notes:'El Carro: Dubhe y Merak señalan hacia la Estrella Polar.',obs:false}}]}}
+let S;
+try{
+  const r=localStorage.getItem(KEY);
+  if(r)S=JSON.parse(r);
+  else{S=seed();const o=localStorage.getItem('catalogo-constelaciones-v1');
+    if(o){const a=JSON.parse(o);if(Array.isArray(a))S.items=a.map(i=>({id:i.id||uid(),name:i.name,pts:i.pts||[],vals:{abbr:i.abbr,hemi:i.hemi,when:i.when,star:i.star,mag:i.mag,notes:i.notes,obs:!!i.obs,date:i.date}}))}}
+}catch(e){S=seed()}
+if(!S||!Array.isArray(S.fields)||!Array.isArray(S.items))S=seed();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+/* ---------- dibujo ---------- */
+function fit(p){
+  if(!p.length)return{x:0,y:0,w:100};
+  let a=1e9,b=1e9,c=-1e9,d=-1e9;
+  p.forEach(q=>{a=Math.min(a,q[0]);c=Math.max(c,q[0]);b=Math.min(b,q[1]);d=Math.max(d,q[1])});
+  const w=Math.max(c-a,d-b,10)*1.3;
+  return{x:(a+c)/2-w/2,y:(b+d)/2-w/2,w};
+}
+function inner(p,w){
+  const r=w*.019;let d='',c='';
+  p.forEach((q,i)=>{d+=(i===0||q[2]?'M':'L')+q[0]+' '+q[1]+' ';c+='<circle cx="'+q[0]+'" cy="'+q[1]+'" r="'+r+'"/>'});
+  return'<path d="'+d+'"/>'+c;
+}
+
+/* ---------- tarjetas y filtros ---------- */
+const filt={};
+function drawFilters(){
+  $('#filters').innerHTML=S.fields.filter(f=>f.type==='select'||f.type==='checkbox').map(f=>{
+    const o=f.type==='select'?(f.options||[]).map(x=>'<option'+(filt[f.id]===x?' selected':'')+'>'+esc(x)+'</option>').join('')
+      :'<option value="si"'+(filt[f.id]==='si'?' selected':'')+'>Sí</option><option value="no"'+(filt[f.id]==='no'?' selected':'')+'>No</option>';
+    return'<select data-f="'+f.id+'" aria-label="Filtrar por '+esc(f.label)+'"><option value="">'+esc(f.label)+': todos</option>'+o+'</select>';
+  }).join('');
+}
+const fmt=(f,v)=>f.type==='date'?String(v).split('-').reverse().join('/'):v;
+function card(i){
+  let h='';
+  (i.fields||S.fields).forEach(f=>{
+    const v=i.vals[f.id];if(v===''||v==null||v===false)return;
+    h+=f.type==='checkbox'?'<span class="seen">★ '+esc(f.label)+'</span>'
+      :'<span class="meta'+(f.type==='longtext'?' clip':'')+'"><b>'+esc(f.label)+':</b> '+esc(fmt(f,v))+'</span>';
+  });
+  const v=fit(i.pts||[]);
+  return'<button class="card" data-id="'+esc(i.id)+'"><span class="chart"><svg viewBox="'+v.x+' '+v.y+' '+v.w+' '+v.w+'" aria-hidden="true">'+inner(i.pts||[],v.w)+'</svg></span><span class="info"><h2>'+esc(i.name)+(i.fields?'<span class="tag">Campos propios</span>':'')+'</h2>'+h+'</span></button>';
+}
+function render(){
+  const q=$('#q').value.toLowerCase().trim();
+  const list=S.items.filter(i=>{
+    for(const id in filt){
+      const v=filt[id];if(!v)continue;
+      const f=S.fields.find(x=>x.id===id);if(!f)continue;
+      const val=i.vals[id];
+      if(f.type==='checkbox'){if((v==='si')!==!!val)return false}else if(val!==v)return false;
+    }
+    return!q||(i.name+' '+(i.fields||S.fields).map(f=>typeof i.vals[f.id]==='boolean'?'':i.vals[f.id]).join(' ')).toLowerCase().includes(q);
+  }).sort((a,b)=>a.name.localeCompare(b.name,'es'));
+  const n=S.items.length;
+  $('#count').textContent=n+(n===1?' constelación registrada':' constelaciones registradas');
+  $('#grid').innerHTML=list.length?list.map(card).join(''):'<p class="empty">'+(n?'Ninguna constelación coincide con la búsqueda.':'Todavía no hay registros. Agregá la primera con «Nueva constelación».')+'</p>';
+}
+$('#q').addEventListener('input',render);
+$('#filters').addEventListener('change',e=>{filt[e.target.dataset.f]=e.target.value;render()});
+$('#grid').addEventListener('click',e=>{const b=e.target.closest('.card');if(b)openForm(b.dataset.id)});
+$('#new').addEventListener('click',()=>openForm());
+
+/* ---------- formulario de registro ---------- */
+let cur=null,pts=[],brk=false,view={x:0,y:0,w:100};
+let curVals={},curFields=null;
+const ef=()=>curFields||S.fields;
+function readVals(){
+  ef().forEach(f=>{
+    const el=$('#f').querySelector('[data-f="'+f.id+'"]');if(!el)return;
+    curVals[f.id]=f.type==='checkbox'?el.checked:f.type==='number'?(el.value===''?'':+el.value):el.value.trim();
+  });
+}
+function drawDyn(){
+  $('#dyn').innerHTML=ef().map(f=>inp(f,curVals[f.id])).join('')||'<p class="hint">No hay campos definidos.</p>';
+  $('#fnote').textContent=curFields?'Esta constelación usa sus propios campos; los cambios en los campos generales no la afectan.':'Esta constelación usa los campos generales del catálogo.';
+}
+function inp(f,v){
+  const a=' data-f="'+f.id+'"',L=esc(f.label);
+  if(f.type==='longtext')return'<label>'+L+'<textarea rows="3"'+a+'>'+esc(v)+'</textarea></label>';
+  if(f.type==='checkbox')return'<label class="chk"><input type="checkbox"'+a+(v?' checked':'')+'>'+L+'</label>';
+  if(f.type==='select'){
+    const o=(f.options||[]).slice();if(v&&!o.includes(v))o.push(v);
+    return'<label>'+L+'<select'+a+'><option value="">Sin elegir</option>'+o.map(x=>'<option'+(x===v?' selected':'')+'>'+esc(x)+'</option>').join('')+'</select></label>';
+  }
+  const t=f.type==='number'?'number" step="any':f.type==='date'?'date':'text';
+  return'<label>'+L+'<input type="'+t+'"'+a+' value="'+esc(v)+'"></label>';
+}
+function grid(v){
+  const raw=v.w/8,m=Math.pow(10,Math.floor(Math.log10(raw))),n=raw/m,step=(n<1.5?1:n<3.5?2:n<7.5?5:10)*m;
+  let g='';
+  for(let x=Math.ceil(v.x/step)*step;x<=v.x+v.w;x+=step)g+='<line x1="'+x+'" y1="'+v.y+'" x2="'+x+'" y2="'+(v.y+v.w)+'"/>';
+  for(let y=Math.ceil(v.y/step)*step;y<=v.y+v.w;y+=step)g+='<line x1="'+v.x+'" y1="'+y+'" x2="'+(v.x+v.w)+'" y2="'+y+'"/>';
+  return{g,step};
+}
+const P=$('#pad');
+function pad(){
+  P.setAttribute('viewBox',view.x+' '+view.y+' '+view.w+' '+view.w);
+  const g=grid(view);
+  P.innerHTML='<g class="gl">'+g.g+'</g>'+inner(pts,view.w);
+  $('#scale').textContent='Cada cuadro mide '+(+g.step.toPrecision(2))+' unidades';
+}
+function setBrk(v){brk=v;$('#brk').setAttribute('aria-pressed',String(v))}
+function zoom(f,ax,ay){
+  const w=Math.min(1e6,Math.max(1,view.w*f)),k=w/view.w;
+  view.x=ax-(ax-view.x)*k;view.y=ay-(ay-view.y)*k;view.w=w;pad();
+}
+function openForm(id){
+  cur=id?S.items.find(i=>i.id===id):null;
+  const v=cur||{vals:{}};
+  $('#nm').value=v.name||'';
+  curVals={...v.vals};curFields=cur&&cur.fields?JSON.parse(JSON.stringify(cur.fields)):null;drawDyn();
+  pts=(v.pts||[]).map(p=>p.slice());view=fit(pts);setBrk(false);pad();
+  $('#del').hidden=!cur;$('#del').textContent='Eliminar';$('#del').dataset.arm='';
+  $('#ttl').textContent=cur?'Editar constelación':'Nueva constelación';
+  $('#dlg').showModal();
+}
+let drag=null;
+P.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY,vx:view.x,vy:view.y,m:false};P.setPointerCapture(e.pointerId)});
+P.addEventListener('pointermove',e=>{
+  if(!drag)return;
+  const dx=e.clientX-drag.x,dy=e.clientY-drag.y;
+  if(!drag.m&&Math.hypot(dx,dy)<5)return;
+  drag.m=true;const k=view.w/P.getBoundingClientRect().width;
+  view.x=drag.vx-dx*k;view.y=drag.vy-dy*k;pad();
+});
+P.addEventListener('pointerup',e=>{
+  if(drag&&!drag.m){
+    const r=P.getBoundingClientRect(),k=view.w/r.width,c=n=>Math.round(n*100)/100;
+    pts.push([c(view.x+(e.clientX-r.left)*k),c(view.y+(e.clientY-r.top)*k),brk?1:0]);setBrk(false);pad();
+  }
+  drag=null;
+});
+P.addEventListener('pointercancel',()=>{drag=null});
+P.addEventListener('wheel',e=>{
+  e.preventDefault();const r=P.getBoundingClientRect();
+  zoom(e.deltaY>0?1.2:1/1.2,view.x+(e.clientX-r.left)/r.width*view.w,view.y+(e.clientY-r.top)/r.height*view.w);
+},{passive:false});
+$('#zin').addEventListener('click',()=>zoom(1/1.5,view.x+view.w/2,view.y+view.w/2));
+$('#zout').addEventListener('click',()=>zoom(1.5,view.x+view.w/2,view.y+view.w/2));
+$('#zfit').addEventListener('click',()=>{view=fit(pts);pad()});
+$('#brk').addEventListener('click',()=>setBrk(!brk));
+$('#undo').addEventListener('click',()=>{pts.pop();pad()});
+$('#clr').addEventListener('click',()=>{pts=[];setBrk(false);view={x:0,y:0,w:100};pad()});
+$('#cancel').addEventListener('click',()=>$('#dlg').close());
+$('#del').addEventListener('click',e=>{
+  if(e.target.dataset.arm!=='1'){e.target.dataset.arm='1';e.target.textContent='Confirmar eliminación';return}
+  S.items=S.items.filter(i=>i!==cur);save();$('#dlg').close();render();
+});
+$('#f').addEventListener('submit',e=>{
+  e.preventDefault();readVals();const vals={};
+  ef().forEach(f=>{if(curVals[f.id]!==undefined)vals[f.id]=curVals[f.id]});
+  const rec={id:cur?cur.id:uid(),name:$('#nm').value.trim(),vals,pts};
+  if(curFields)rec.fields=curFields;
+  if(cur)S.items[S.items.indexOf(cur)]=rec;else S.items.push(rec);
+  save();$('#dlg').close();render();
+});
+
+/* ---------- editor de campos ---------- */
+let draft=[],orig={};
+function drawFM(){
+  $('#flist').innerHTML=draft.map((f,i)=>
+    '<div class="frow" data-i="'+i+'"><input type="text" class="fl" value="'+esc(f.label)+'" aria-label="Nombre del campo">'+
+    '<select class="ft" aria-label="Tipo de campo">'+Object.keys(TYPES).map(k=>'<option value="'+k+'"'+(k===f.type?' selected':'')+'>'+TYPES[k]+'</option>').join('')+'</select>'+
+    (f.type==='select'?'<input type="text" class="fo" value="'+esc((f.options||[]).join(', '))+'" placeholder="Opciones separadas por coma" aria-label="Opciones de la lista">':'')+
+    '<span class="fb"><button type="button" data-a="up" aria-label="Subir">▲</button><button type="button" data-a="dn" aria-label="Bajar">▼</button><button type="button" class="danger" data-a="rm">Quitar</button></span></div>'
+  ).join('')||'<p class="hint">No hay campos. Agregá uno.</p>';
+}
+let fmode='global';
+function openFM(m){
+  fmode=m;const base=m==='rec'?ef():S.fields;
+  draft=base.map(f=>({...f,options:(f.options||[]).slice()}));
+  orig={};base.forEach(f=>{orig[f.id]=f.type});
+  $('#ftitle').textContent=m==='rec'?'Campos de esta constelación':'Campos del catálogo';
+  $('#fhint').textContent=(m==='rec'?'Los cambios valen solo para esta constelación; las demás siguen con los campos generales. ':'Los cambios valen para todas las constelaciones, excepto las que tienen campos propios. ')+'Para una lista desplegable, escribí sus opciones separadas por coma. Al quitar un campo o cambiarle el tipo se borran sus datos al guardar.';
+  $('#fgen').hidden=!(m==='rec'&&curFields);
+  drawFM();$('#fdlg').showModal();
+}
+$('#mf').addEventListener('click',()=>openFM('global'));
+$('#rf').addEventListener('click',()=>{readVals();openFM('rec')});
+$('#fgen').addEventListener('click',()=>{curFields=null;drawDyn();$('#fdlg').close()});
+$('#flist').addEventListener('input',e=>{
+  const r=e.target.closest('.frow');if(!r)return;const f=draft[+r.dataset.i];
+  if(e.target.classList.contains('fl'))f.label=e.target.value;
+  if(e.target.classList.contains('fo'))f.options=e.target.value.split(',').map(s=>s.trim()).filter(Boolean);
+});
+$('#flist').addEventListener('change',e=>{
+  if(!e.target.classList.contains('ft'))return;
+  draft[+e.target.closest('.frow').dataset.i].type=e.target.value;drawFM();
+});
+$('#flist').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  const i=+b.closest('.frow').dataset.i,a=b.dataset.a;
+  if(a==='rm')draft.splice(i,1);
+  else{const j=a==='up'?i-1:i+1;if(j<0||j>=draft.length)return;[draft[i],draft[j]]=[draft[j],draft[i]]}
+  drawFM();
+});
+$('#fadd').addEventListener('click',()=>{
+  draft.push({id:'f'+uid(),label:'Nuevo campo',type:'text',options:[]});drawFM();
+  const l=document.querySelectorAll('#flist .fl');l[l.length-1].focus();l[l.length-1].select();
+});
+$('#fcancel').addEventListener('click',()=>$('#fdlg').close());
+$('#fsave').addEventListener('click',()=>{
+  const nf=draft.filter(f=>f.label.trim()).map(f=>({id:f.id,label:f.label.trim(),type:f.type,...(f.type==='select'?{options:f.options||[]}:{})}));
+  const keep={};nf.forEach(f=>{keep[f.id]=(orig[f.id]===undefined||orig[f.id]===f.type)});
+  if(fmode==='rec'){
+    for(const k in curVals){if(keep[k]!==true)delete curVals[k]}
+    curFields=JSON.stringify(nf)===JSON.stringify(S.fields)?null:nf;
+    drawDyn();$('#fdlg').close();return;
+  }
+  S.items.forEach(i=>{if(i.fields)return;for(const k in i.vals){if(keep[k]!==true)delete i.vals[k]}});
+  S.fields=nf;
+  for(const k in filt){if(!nf.some(f=>f.id===k))delete filt[k]}
+  save();drawFilters();render();$('#fdlg').close();
+});
+
+drawFilters();render();
+</script>
+</body>
+</html>
